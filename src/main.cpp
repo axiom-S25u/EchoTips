@@ -34,7 +34,7 @@ class $modify(MyLoadingLayer, LoadingLayer) {
             };
         }
 
-        int r = geode::utils::random(0, static_cast<int>(fakeTips.size() - 1));
+        int r = geode::utils::random::generate<int>(0, static_cast<int>(fakeTips.size()));
 
         auto label = this->getChildByType<CCLabelBMFont>(0);
         if (label) {
