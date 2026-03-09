@@ -1,6 +1,5 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LoadingLayer.hpp>
-#include <Geode/utils/random.hpp>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -13,7 +12,7 @@ class $modify(MyLoadingLayer, LoadingLayer) {
 
         std::vector<std::string> fakeTips;
         
-        auto filePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("tips.txt", false);
+        auto filePath = Mod::get()->getResourcesDir() / "tips.txt";
         
         std::ifstream file(filePath);
         if (file.is_open()) {
@@ -34,9 +33,13 @@ class $modify(MyLoadingLayer, LoadingLayer) {
             };
         }
 
-        int r = geode::utils::random::get<int>(0, fakeTips.size() - 1);
+        int r = geode::utils::num::rand(0, static_cast<int>(fakeTips.size() - 1));
 
-        auto label = this->getChildByType<CCLabelBMFont>(0);
+        auto label = typeinfo_cast<CCLabelBMFont*>(this->getChildByID("loading-tip-label"));
+        if (!label) {
+            label = this->getChildByType<CCLabelBMFont>(0);
+        }
+
         if (label) {
             label->setString(fakeTips[r].c_str());
         }
