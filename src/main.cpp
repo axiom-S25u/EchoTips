@@ -1,5 +1,6 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LoadingLayer.hpp>
+#include <Geode/utils/random.hpp>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -11,9 +12,9 @@ class $modify(MyLoadingLayer, LoadingLayer) {
         if (!LoadingLayer::init(fromReload)) return false;
 
         std::vector<std::string> fakeTips;
-        
-        auto filePath = Mod::get()->getResourcesDir() / "tips.txt";
-        
+
+        auto filePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("tips.txt", false);
+
         std::ifstream file(filePath);
         if (file.is_open()) {
             std::string line;
@@ -24,7 +25,7 @@ class $modify(MyLoadingLayer, LoadingLayer) {
             }
             file.close();
         }
-         
+
         if (fakeTips.empty()) {
             fakeTips = {
                 "optimizing wave physics... 73%",
@@ -33,13 +34,9 @@ class $modify(MyLoadingLayer, LoadingLayer) {
             };
         }
 
-        int r = geode::utils::num::rand(0, static_cast<int>(fakeTips.size() - 1));
+        int r = geode::utils::random(0, static_cast<int>(fakeTips.size() - 1));
 
-        auto label = typeinfo_cast<CCLabelBMFont*>(this->getChildByID("loading-tip-label"));
-        if (!label) {
-            label = this->getChildByType<CCLabelBMFont>(0);
-        }
-
+        auto label = this->getChildByType<CCLabelBMFont>(0);
         if (label) {
             label->setString(fakeTips[r].c_str());
         }
